@@ -17,6 +17,7 @@ class Fighter():
         self.running = False
         self.jump = False
         self.attacking = False
+        self.special_attacking = False
         self.attack_type = 0
         self.attack_cooldown = 0
         self.attack_sound = sound
@@ -45,7 +46,7 @@ class Fighter():
 
         key = pygame.key.get_pressed()
 
-        if self.attacking == False and self.alive == True and round_over == False:
+        if self.attacking == False and self.special_attacking == False and self.alive == True and round_over == False:
             #player 1 controls
             if self.player == 1:
 
@@ -85,6 +86,14 @@ class Fighter():
                         self.attack_type = 1
                     if key[pygame.K_p]:
                         self.attack_type = 2
+
+                if key[pygame.K_l] and key[pygame.K_k]:
+                    self.special_attack(surface, target)
+
+                    if key[pygame.K_l] and key[pygame.K_k] :
+                        self.attack_type = 3
+
+
 
 
 
@@ -127,6 +136,12 @@ class Fighter():
                 self.update_action(3)
             elif self.attack_type == 2:
                 self.update_action(4)
+            #testing
+            if self.special_attacking == True:
+                if self.attack_type == 3:
+                   self.update_action(4)   
+
+ 
         elif self.jump == True:
             self.update_action(2)
         elif self.running == True:
@@ -147,11 +162,13 @@ class Fighter():
                 self.frame_index = 0
                 if self.action == 3 or self.action == 4:
                     self.attacking = False
+                    self.special_attacking = False
                     self.attack_cooldown = 20
                 if self.action == 5:
                     self.hit = False
                     #if the player was in the middle of an attack, it is stopped
                     self.attacking = False
+                    self.special_attacking = False
                     self.attack_cooldown = 20
             
     def attack(self, target):
@@ -162,6 +179,20 @@ class Fighter():
             if attacking_rect.colliderect(target.rect):
                 target.health -= 10
                 target.hit = True
+
+    def special_attack(self, surface, target):
+        if self.attack_cooldown == 0:
+            self.attacking = True
+            self.special_attacking = True
+            self.attack_sound.play()
+        #testing
+        special_attack_rect = pygame.Rect(self.rect.centerx - ( 2 * 300 * self.flip),self.rect.y, 2 * self.rect.width, 90)
+        pygame.draw.rect(surface, (0, 255,  0), special_attack_rect)
+
+        if special_attack_rect.colliderect(target.rect):
+            target.health -= 10
+            target.hit = True    
+            
 
             
 
