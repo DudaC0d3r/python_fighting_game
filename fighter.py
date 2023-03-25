@@ -1,7 +1,9 @@
 import pygame
+#from bullet import Bullet 
+
 
 class Fighter():
-    def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound):
+    def __init__(self, player, x, y, flip, data, sprite_sheet, animation_steps, sound, bullet_img, bullet_group):
         self.player = player
         self.size = data[0]
         self.image_scale = data[1]
@@ -24,6 +26,8 @@ class Fighter():
         self.hit = False
         self.health = 100
         self.alive = True
+        self.blt_image = bullet_img
+        self.blt_grp = bullet_group
 
     def load_images(self, sprite_sheet, animation_steps):
         #extract images from spritesheet
@@ -88,7 +92,7 @@ class Fighter():
                         self.attack_type = 2
 
                 if key[pygame.K_l] and key[pygame.K_k]:
-                    self.special_attack(surface, target)
+                    self.special_attack(surface, target, self.blt_grp)
 
                     if key[pygame.K_l] and key[pygame.K_k] :
                         self.attack_type = 3
@@ -139,7 +143,10 @@ class Fighter():
             #testing
             if self.special_attacking == True:
                 if self.attack_type == 3:
-                   self.update_action(4)   
+                   self.update_action(4)
+
+                   #bullet.draw(surface) 
+                   #bullet.bullet_group.add(bullet)
 
  
         elif self.jump == True:
@@ -150,9 +157,9 @@ class Fighter():
         else:
             self.update_action(0)
 
-        animetion_cooldown = 50
+        animation_cooldown = 50
         self.image = self.animation_list[self.action][self.frame_index]
-        if pygame.time.get_ticks() - self.update_time > animetion_cooldown:
+        if pygame.time.get_ticks() - self.update_time > animation_cooldown:
             self.frame_index += 1
             self.update_time = pygame.time.get_ticks()
         if self.frame_index >= len(self.animation_list[self.action]):
@@ -162,7 +169,7 @@ class Fighter():
                 self.frame_index = 0
                 if self.action == 3 or self.action == 4:
                     self.attacking = False
-                    self.special_attacking = False
+                    
                     self.attack_cooldown = 20
                 if self.action == 5:
                     self.hit = False
@@ -180,12 +187,15 @@ class Fighter():
                 target.health -= 10
                 target.hit = True
 
-    def special_attack(self, surface, target):
-        if self.attack_cooldown == 0:
-            self.attacking = True
-            self.special_attacking = True
-            self.attack_sound.play()
+    def special_attack(self, surface, target, blt_group):
+        # if self.attack_cooldown == 0:
+        #     self.attacking = True
+        #     self.special_attacking = True
+        #     self.attack_sound.play()
         #testing
+        bullet = Bullet(self.rect.centerx - ( 2 * self.rect.width * self.flip),self.rect.y, self.flip, self.blt_image)  
+        blt_group.add(bullet)
+
         special_attack_rect = pygame.Rect(self.rect.centerx - ( 2 * 300 * self.flip),self.rect.y, 2 * self.rect.width, 90)
         pygame.draw.rect(surface, (0, 255,  0), special_attack_rect)
 
@@ -208,5 +218,16 @@ class Fighter():
         
         surface.blit(img, (self.rect.x - (self.offset[0] * self.image_scale), self.rect.y - (self.offset[1] * self.image_scale)))
 
+class Bullet(pygame.sprite.Sprite):
+	def __init__(self, x, y, direction, blt_img):
+		pygame.sprite.Sprite.__init__(self)
+		self.speed = 10
+		self.image = blt_img
+		self.rect = self.image.get_rect()
+		self.rect.center = (x, y)
+		self.direction = direction
 
+	def update(self):
+		#move bullet
+		self.rect.x += (self.direction * self.speed)
         

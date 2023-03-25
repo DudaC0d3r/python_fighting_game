@@ -19,7 +19,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 WHITE = (255, 255, 255)
 
-intro_count = 3
+intro_count = 0
 last_count_update = pygame.time.get_ticks()
 score = [0, 0]
 round_over = False
@@ -50,6 +50,8 @@ bg_image = pygame.image.load("assets/images/background/background.jpg").convert_
 warrior_sheet = pygame.image.load("assets/images/warrior/Sprites/warrior.png").convert_alpha()
 wizard_sheet = pygame.image.load("assets/images/wizard/Sprites/wizard.png").convert_alpha()
 
+bullet_img = pygame.image.load("assets/images/icons/bullet.png").convert_alpha()
+
 victory_img = pygame.image.load("assets/images/icons/victory.png").convert_alpha()
 
 #define number of steps in each animation
@@ -58,6 +60,8 @@ WIZARD_ANIMATION_STEPS = [8, 8, 1, 8, 8, 3, 7]
 
 count_font = pygame.font.Font("assets/fonts/turok.ttf", 80)
 score_font = pygame.font.Font("assets/fonts/turok.ttf", 30)
+
+
 
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, True, text_col)
@@ -73,8 +77,10 @@ def draw_health_bar(health, x, y):
     pygame.draw.rect(screen, RED, (x, y, 400, 30))
     pygame.draw.rect(screen, YELLOW, (x, y, 400 * ratio , 30))
 
-fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx)
-fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx)
+bullet_group = pygame.sprite.Group()
+
+fighter_1 = Fighter(1, 200, 310, False, WARRIOR_DATA, warrior_sheet, WARRIOR_ANIMATION_STEPS, sword_fx, bullet_img, bullet_group)
+fighter_2 = Fighter(2, 700, 310, True, WIZARD_DATA, wizard_sheet, WIZARD_ANIMATION_STEPS, magic_fx, bullet_img, bullet_group)
 
 run = True
 while run:
@@ -83,6 +89,8 @@ while run:
 
     draw_bg()
 
+    #test
+    
     draw_health_bar(fighter_1.health, 20, 20)
     draw_health_bar(fighter_2.health, 500, 20)
     draw_text("P1: " + str(score[0]), score_font, RED, 20, 60)
@@ -99,12 +107,19 @@ while run:
         
     #fighter_2.move()
 
+    #create sprite groups
+    bullet_group.update()
+    bullet_group.draw(screen)
+
     #update animation
     fighter_1.update()
     fighter_2.update()
 
     fighter_1.draw(screen)
     fighter_2.draw(screen)
+
+
+
 
     if round_over == False:
         if fighter_1.alive == False:
@@ -132,5 +147,6 @@ while run:
             run = False
 
     pygame.display.update()
+
 
 pygame.quit()
