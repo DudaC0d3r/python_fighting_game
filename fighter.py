@@ -193,7 +193,7 @@ class Fighter():
         #     self.special_attacking = True
         #     self.attack_sound.play()
         #testing
-        bullet = Bullet(self.rect.centerx - ( 2 * self.rect.width * self.flip),self.rect.y, self.flip, self.blt_image)  
+        bullet = Bullet(self.rect.centerx - ( 2 * self.rect.width * self.flip),self.rect.y, self.flip, self.blt_image)
         blt_group.add(bullet)
 
         special_attack_rect = pygame.Rect(self.rect.centerx - ( 2 * 300 * self.flip),self.rect.y, 2 * self.rect.width, 90)
@@ -228,6 +228,7 @@ class Bullet(pygame.sprite.Sprite):
 		self.direction = direction
 
 	def update(self):
-		#move bullet
-		self.rect.x += (self.direction * self.speed)
-        
+            if self.direction :
+                self.rect.x += -self.speed 
+            else:
+                self.rect.x += self.speed             
