@@ -1,0 +1,6 @@
+''' form math import trunc
+num = float(input("digite um valor: "))
+print("O valor digitado foi {} e a sua porcao inteira e {} ".format(num, int(num))) '''
+
+num = float(input("digite um valor: "))
+print("O valor digitado foi {} e a porcao inteira e {}".format(num, int(num)))
