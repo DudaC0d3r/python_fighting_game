@@ -1,0 +1,14 @@
+A = int (input('Em que ano você nasceu:'))
+M = int (input ('Qual o ano atual :'))
+Ano = M - A
+F = Ano - 18
+Y =(-1) * F
+if Ano == 18:
+	print ('Chegou o momento de se alistar!')
+	print('\33[32m__Parabéns novo recruta__\33[m')
+elif Ano <=18:
+	print (f'Ainda nao chegou o momento de se alitar, falta {Y} anos! ')
+	print (f'Tente novamente em {Y} anos')
+elif Ano >= 18:
+	 print (f'Seu tempo passou há {Y} anos!')
+print ('___Espero ter respondido suas duvidas___')
