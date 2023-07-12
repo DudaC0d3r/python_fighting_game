@@ -22,7 +22,7 @@ def leiafloat():
                     print("erro! float tente novamente")
                 if q + 1 == len(f):
                     
-                    print("o numero real digitado foi {f}")
+                    print("o numero real digitado foi {}".format(f))
                     return False
         else:
             print("erro! float tente novamente")
